@@ -112,9 +112,14 @@ module Puma
         end
 
         return false
-      elsif fast_check &&
-            IO.select([@to_io], nil, nil, FAST_TRACK_KA_TIMEOUT)
-        return try_to_finish
+      elsif fast_check
+        if ENV['NO_IO_CHECK']
+          return false
+        else
+          if IO.select([@to_io], nil, nil, FAST_TRACK_KA_TIMEOUT)
+            return try_to_finish
+          end
+        end
       end
     end
 
